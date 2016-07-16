@@ -40,8 +40,8 @@ void listen_to_client(FILE *client_file, FILE *server_file)
 void write_to_client(FILE *server_file, FILE *client_file)
 {
 	printf("Reply to Client:\n");
-	char string[100];
-	gets(string);
+	char *string;
+	string = (char*)malloc(sizeof(char)*(1024 - 6));
 	int len = 0;
 	char ack = '0';
 	//write the ackwnoledgement as 0 initially
@@ -52,7 +52,11 @@ void write_to_client(FILE *server_file, FILE *client_file)
 	fseek(server_file, 2, SEEK_SET);
 	fwrite(&len, sizeof(int), 1, server_file);
 
-	len = strlen(string);
+	do
+	{
+		gets(string);
+		len = strlen(string);
+	} while (len == 0);
 
 	//write the string
 	fseek(server_file, 2 + sizeof(int), SEEK_SET);
@@ -64,7 +68,7 @@ void write_to_client(FILE *server_file, FILE *client_file)
 	len = 0;
 
 	//performing another operation to confirm for client
-	fseek(server_file, 1, SEEK_SET);
+	fseek(server_file, 2, SEEK_SET);
 	fread(&len, sizeof(int), 1, server_file);
 
 	//waiting until the acknowledgement becomes 1
@@ -80,12 +84,12 @@ void write_to_client(FILE *server_file, FILE *client_file)
 			fwrite(&len, sizeof(int), 1, server_file);
 
 			//performing another operation to confirm for client
-			fseek(server_file, 1, SEEK_SET);
+			fseek(server_file, 2, SEEK_SET);
 			fread(&len, sizeof(int), 1, server_file);
 			break;
 		}
-			
 	}
+	free(string);
 }
 
 
