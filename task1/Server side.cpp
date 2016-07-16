@@ -134,7 +134,7 @@ void start_server(FILE *server_file, FILE *client_file)
 int main()
 {
 	FILE *server_file, *client_file, *local_file;
-	server_file = fopen("D:\client read server write.bin", "wb+");
-	client_file = fopen("D:\client write server read.bin", "rb+");
+	server_file = fopen("D:\\client read server write.bin", "wb+");
+	client_file = fopen("D:\\client write server read.bin", "rb+");
 	start_server(server_file, client_file);
 }
