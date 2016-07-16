@@ -33,7 +33,7 @@ void listen_to_server(FILE *server_file, FILE *client_file)
 	fseek(client_file, 1, SEEK_SET);
 	fwrite(&ack, sizeof(char), 1, client_file);
 
-	//performing another operation to confirm for server
+	//performing another operation to confirm for client
 	fseek(client_file, 1, SEEK_SET);
 	fread(&ack, sizeof(char), 1, client_file);
 }
@@ -42,8 +42,8 @@ void listen_to_server(FILE *server_file, FILE *client_file)
 void write_to_server(FILE *client_file, FILE *server_file)
 {
 	printf("Message to server:\n");
-	char string[100];
-	gets(string);
+	char *string;
+	string = (char*)malloc(sizeof(char)*(1024 - 6));
 	int len = 0;
 	char ack = '0';
 	//write the ackwnoledgement as 0 initially
@@ -54,7 +54,11 @@ void write_to_server(FILE *client_file, FILE *server_file)
 	fseek(client_file, 2, SEEK_SET);
 	fwrite(&len, sizeof(int), 1, client_file);
 	
-	len = strlen(string);
+	do
+	{
+		gets(string);
+		len = strlen(string);
+	} while (len == 0);
 
 	//write the string
 	fseek(client_file, 2 + sizeof(int), SEEK_SET);
@@ -65,7 +69,7 @@ void write_to_server(FILE *client_file, FILE *server_file)
 	fwrite(&len, sizeof(int), 1, client_file);
 
 	//performing another operation to confirm for server
-	fseek(client_file, 1, SEEK_SET);
+	fseek(client_file, 2, SEEK_SET);
 	fread(&len, sizeof(int), 1, client_file);
 
 	//waiting until the acknowledgement becomes 1
@@ -81,11 +85,12 @@ void write_to_server(FILE *client_file, FILE *server_file)
 			fwrite(&len, sizeof(int), 1, client_file);
 
 			//performing another operation to confirm for server
-			fseek(client_file, 1, SEEK_SET);
+			fseek(client_file, 2, SEEK_SET);
 			fread(&len, sizeof(int), 1, client_file);
 			break;
 		}
 	}
+	free(string);
 }
 
 
