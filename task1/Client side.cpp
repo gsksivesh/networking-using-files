@@ -33,7 +33,7 @@ void listen_to_server(FILE *server_file, FILE *client_file)
 	fseek(client_file, 1, SEEK_SET);
 	fwrite(&ack, sizeof(char), 1, client_file);
 
-	//performing another operation to confirm for client
+	//performing another operation to confirm for server
 	fseek(client_file, 1, SEEK_SET);
 	fread(&ack, sizeof(char), 1, client_file);
 }
